@@ -39,42 +39,35 @@ outputs = File.readlines(ARGV[0]).map do |line|
   four = signals.delete_at(i)
 
   a = seven.chars.reject { |c| four.include?(c) }.first 
-  raise a if mappings.key?(a)
   mappings[a] = 'a'
 
   x = four + a
   i = signals.find_index { |signal| (signal.length - x.length) == 1 && (signal.chars - x.chars).length == 1 }
   nine = signals.delete_at(i)
   g = (nine.chars - x.chars).first
-  raise g if mappings.key?(g)
   mappings[g] = 'g'
 
   x = one + a + g
   i = signals.find_index { |signal| (signal.length - x.length) == 1 && (signal.chars - x.chars).length == 1 }
   three = signals.delete_at(i)
   d = (three.chars - x.chars).first
-  raise d if mappings.key?(d)
   mappings[d] = 'd'
 
   b = (nine.chars - three.chars).first
-  raise b if mappings.key?(b)
   mappings[b] = 'b'
 
   x = a + g + b + d
   i = signals.find_index { |signal| (signal.length - x.length) == 1 && (signal.chars - x.chars).length == 1 }
   five = signals.delete_at(i)
   f = (five.chars - x.chars).first
-  raise f if mappings.key?(f)
   mappings[f] = 'f'
 
   i = signals.find_index { |signal| (signal.length - five.length) == 1 && (signal.chars - five.chars).length == 1 }
   six = signals.delete_at(i)
   e = (six.chars - five.chars).first
-  raise e if mappings.key?(e)
   mappings[e] = 'e'
 
   c = (nine.chars - five.chars).first
-  raise c if mappings.key?(c)
   mappings[c] = 'c'
 
   digits = scrambled_outputs.map do |s|

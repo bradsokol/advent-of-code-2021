@@ -17,8 +17,7 @@ File.readlines(ARGV[0]).each do |line|
 end
 
 folds.each_with_index do |(direction, position), i|
-  deletions = []
-  paper.each do |(x, y)|
+  deletions = paper.each_with_object([]) do |(x, y), deletions|
     if direction == 'x'
       next if x < position
 
@@ -41,14 +40,8 @@ folds.each_with_index do |(direction, position), i|
   puts paper.size if i == 0
 end
 
-min_x = min_y = 999_999
-max_x = max_y = 0
-paper.each do |x, y|
-  min_x = [x, min_x].min
-  min_y = [y, min_y].min
-  max_x = [x, max_x].max
-  max_y = [y, max_y].max
-end
+min_x, max_x = paper.map { |p| p[0] }.minmax
+min_y, max_y = paper.map { |p| p[1] }.minmax
 
 (min_y..max_y).each do |y|
   (min_x..max_x).each do |x|

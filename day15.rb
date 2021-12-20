@@ -68,3 +68,30 @@ goal = [grid.first.size - 1, grid.size - 1]
 
 path = shortest_path(grid, goal, [0, 0])
 puts path.map { |v| v[1] }.sum
+
+def next_risk(risk, offset)
+  new_risk = risk + offset
+  new_risk = (new_risk % 10) + 1 if new_risk > 9
+  new_risk
+end
+
+big_grid = grid.map do |line|
+  big_line = []
+  5.times do |i|
+    line.each { |n| big_line << next_risk(n, i) }
+  end
+  big_line
+end
+
+big_grid2 = []
+5.times do |i|
+  big_grid.each do |line|
+    big_grid2 << line.map { |n| next_risk(n, i) }
+  end
+end
+
+# big_grid2.each { |line| puts line.map(&:to_s).join }
+goal = [big_grid2.first.size - 1, big_grid2.size - 1]
+
+path = shortest_path(big_grid2, goal, [0, 0])
+puts path.map { |v| v[1] }.sum

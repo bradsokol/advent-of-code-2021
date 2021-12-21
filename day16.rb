@@ -16,6 +16,39 @@ class Packet
   def add_subpacket(subpacket)
     @subpackets << subpacket
   end
+
+  def evaluate
+    case type
+    when 0
+      subpackets.each do |s|
+        binding.pry if s.evaluate.is_a?(Packet)
+      end
+      subpackets.sum { |subpacket| subpacket.evaluate }
+    when 1
+      subpackets.each_with_object(1) { |subpacket, product| subpacket.evaluate * product }
+    when 2
+      subpackets.min_by { |subpacket| subpacket.evaluate }.evaluate
+    when 3
+      subpackets.max_by { |subpacket| subpacket.evaluate }.evaluate
+    when 4
+      literal
+    when 5
+      subpackets[0].evaluate > subpackets[1].evaluate ? 1 : 0
+    when 6
+      subpackets[0].evaluate < subpackets[1].evaluate ? 1 : 0
+    when 7
+      subpackets[0].evaluate == subpackets[1].evaluate ? 1 : 0
+    else
+      puts "Unknown type #{type}"
+      exit(1)
+    end
+  rescue
+    binding.pry
+  end
+
+  def sum_versions
+    subpackets.reduce(version) { |sum, subpacket| sum + subpacket.sum_versions }
+  end
 end
 
 class PacketParser
@@ -108,9 +141,6 @@ data = line.chars.map do |c|
   '0000'[...(4 - b.length)] + b
 end.join
 
-def sum_versions(packet)
-  packet.subpackets.reduce(packet.version) { |sum, subpacket| sum + sum_versions(subpacket) }
-end
-
 first_packet = PacketParser.new(data).parse_packet
-puts sum_versions(first_packet)
+puts first_packet.sum_versions
+puts first_packet.evaluate
